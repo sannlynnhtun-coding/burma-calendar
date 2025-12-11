@@ -1,5 +1,6 @@
 import React from 'react';
 import { DayInfo, Holiday } from '../types/calendar';
+import { getCurrentTheme } from '../utils/theme';
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -61,54 +62,92 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({ currentDate, holiday
   const days = getDaysInMonth(currentDate);
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const weekDaysMm = ['တနင်္ဂနွေ', 'တနင်္လာ', 'အင်္ဂါ', 'ဗုဒ္ဓဟူး', 'ကြာသပတေး', 'သောကြာ', 'စနေ'];
+  const theme = getCurrentTheme(currentDate);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
-      <div className="grid grid-cols-7 gap-2 mb-4">
+    <div 
+      className="rounded-xl shadow-lg p-3 sm:p-4 md:p-6 transition-colors duration-500"
+      style={{ backgroundColor: theme.colors.background }}
+    >
+      <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
         {weekDays.map((day, index) => (
-          <div key={day} className="text-center p-3 bg-gray-50 rounded-lg">
-            <div className="font-semibold text-gray-700">{day}</div>
-            <div className="text-sm text-gray-500">{weekDaysMm[index]}</div>
+          <div 
+            key={day} 
+            className="text-center p-1 sm:p-2 md:p-3 rounded-lg"
+            style={{ backgroundColor: theme.colors.secondary, color: '#FFFFFF' }}
+          >
+            <div className="font-semibold text-xs sm:text-sm md:text-base">{day}</div>
+            <div className="text-xs hidden sm:block">{weekDaysMm[index]}</div>
           </div>
         ))}
       </div>
       
-      <div className="grid grid-cols-7 gap-2">
-        {days.map((dayInfo, index) => (
-          <div
-            key={index}
-            className={`
-              relative min-h-[60px] p-2 rounded-lg border transition-all duration-200 hover:shadow-md
-              ${dayInfo.day === 0 ? 'invisible' : ''}
-              ${dayInfo.isToday ? 'bg-yellow-100 border-yellow-400 ring-2 ring-yellow-300' : ''}
-              ${dayInfo.isHoliday ? 'bg-red-50 border-red-300' : 'bg-white border-gray-200'}
-              ${dayInfo.isWeekend && !dayInfo.isHoliday ? 'bg-blue-50 border-blue-200' : ''}
-            `}
-          >
-            {dayInfo.day > 0 && (
-              <>
-                <div className={`
-                  text-lg font-semibold
-                  ${dayInfo.isToday ? 'text-yellow-800' : ''}
-                  ${dayInfo.isHoliday ? 'text-red-700' : ''}
-                  ${dayInfo.isWeekend && !dayInfo.isHoliday ? 'text-blue-700' : 'text-gray-800'}
-                `}>
-                  {dayInfo.day}
-                </div>
-                
-                {dayInfo.isHoliday && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-                )}
-                
-                {dayInfo.isToday && (
-                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-xs bg-yellow-600 text-white px-2 py-1 rounded-full">
-                    ဒီနေ့
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
+        {days.map((dayInfo, index) => {
+          const isToday = dayInfo.isToday;
+          const isHoliday = dayInfo.isHoliday;
+          const isWeekend = dayInfo.isWeekend && !isHoliday;
+          
+          let cellStyle: React.CSSProperties = {
+            backgroundColor: theme.colors.background,
+            borderColor: theme.colors.secondary,
+            borderWidth: '1px',
+            borderStyle: 'solid',
+          };
+          
+          if (isToday) {
+            cellStyle.backgroundColor = theme.colors.primary;
+            cellStyle.color = '#FFFFFF';
+            cellStyle.borderColor = theme.colors.primary;
+          } else if (isHoliday) {
+            cellStyle.backgroundColor = theme.colors.secondary;
+            cellStyle.color = '#FFFFFF';
+            cellStyle.opacity = 0.9;
+          } else if (isWeekend) {
+            cellStyle.backgroundColor = theme.colors.background;
+            cellStyle.opacity = 0.7;
+          }
+          
+          return (
+            <div
+              key={index}
+              className={`
+                relative min-h-[40px] sm:min-h-[50px] md:min-h-[60px] p-1 sm:p-2 rounded-lg transition-all duration-200 hover:shadow-md
+                ${dayInfo.day === 0 ? 'invisible' : ''}
+              `}
+              style={cellStyle}
+            >
+              {dayInfo.day > 0 && (
+                <>
+                  <div 
+                    className="text-sm sm:text-base md:text-lg font-semibold"
+                    style={{ 
+                      color: isToday ? '#FFFFFF' : isHoliday ? '#FFFFFF' : theme.colors.text 
+                    }}
+                  >
+                    {dayInfo.day}
                   </div>
-                )}
-              </>
-            )}
-          </div>
-        ))}
+                  
+                  {isHoliday && !isToday && (
+                    <div 
+                      className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-3 sm:h-3 rounded-full"
+                      style={{ backgroundColor: theme.colors.primary }}
+                    ></div>
+                  )}
+                  
+                  {isToday && (
+                    <div 
+                      className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 text-[10px] sm:text-xs px-1 sm:px-2 py-0.5 rounded-full text-white"
+                      style={{ backgroundColor: theme.colors.secondary }}
+                    >
+                      ဒီနေ့
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

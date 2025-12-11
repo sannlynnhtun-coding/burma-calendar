@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://burma-calendar.vercel.app/sitemap.xml

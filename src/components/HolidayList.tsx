@@ -1,6 +1,7 @@
 import React from 'react';
 import { Holiday } from '../types/calendar';
 import { Calendar, Star } from 'lucide-react';
+import { getCurrentTheme } from '../utils/theme';
 
 interface HolidayListProps {
   currentDate: Date;
@@ -34,20 +35,24 @@ export const HolidayList: React.FC<HolidayListProps> = ({ currentDate, holidays 
   };
 
   const nextFestival = getNextFestival();
+  const theme = getCurrentTheme(currentDate);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Next Festival Countdown */}
       {nextFestival && (
-        <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6 rounded-xl shadow-lg">
-          <div className="flex items-center space-x-3 mb-3">
-            <Star className="h-6 w-6 text-yellow-200" />
-            <h3 className="text-xl font-semibold">နောက်လာမည့်ပွဲတော်</h3>
+        <div 
+          className="text-white p-4 sm:p-6 rounded-xl shadow-lg transition-colors duration-500"
+          style={{ backgroundColor: theme.colors.primary }}
+        >
+          <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+            <Star className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: theme.colors.secondary }} />
+            <h3 className="text-base sm:text-lg md:text-xl font-semibold">နောက်လာမည့်ပွဲတော်</h3>
           </div>
-          <div className="text-2xl font-bold mb-2">{nextFestival.name}</div>
-          <div className="text-lg">
+          <div className="text-lg sm:text-xl md:text-2xl font-bold mb-2">{nextFestival.name}</div>
+          <div className="text-sm sm:text-base md:text-lg">
             {nextFestival.daysUntil} ရက်ကျန်ပါသည်
-            <span className="block text-sm text-orange-100 mt-1">
+            <span className="block text-xs sm:text-sm mt-1" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
               {nextFestival.date.toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -60,65 +65,100 @@ export const HolidayList: React.FC<HolidayListProps> = ({ currentDate, holidays 
       )}
 
       {/* Current Month Holidays */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex items-center space-x-3 mb-4">
-          <Calendar className="h-6 w-6 text-red-600" />
-          <h3 className="text-xl font-semibold text-gray-800">
+      <div 
+        className="rounded-xl shadow-lg p-4 sm:p-6 transition-colors duration-500"
+        style={{ backgroundColor: theme.colors.background }}
+      >
+        <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+          <Calendar className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: theme.colors.primary }} />
+          <h3 className="text-base sm:text-lg md:text-xl font-semibold" style={{ color: theme.colors.text }}>
             {currentMonth} လပွဲတော်များ
           </h3>
         </div>
         
         {monthHolidays.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {monthHolidays.map((holiday, index) => (
-              <div key={index} className="border-l-4 border-red-500 pl-4 py-3 bg-red-50 rounded-r-lg">
-                <h4 className="font-semibold text-gray-800 text-lg mb-2">
+              <div 
+                key={index} 
+                className="pl-3 sm:pl-4 py-2 sm:py-3 rounded-r-lg transition-colors duration-500"
+                style={{ 
+                  borderLeftWidth: '4px',
+                  borderLeftStyle: 'solid',
+                  borderLeftColor: theme.colors.primary,
+                  backgroundColor: theme.colors.background,
+                  opacity: 0.95
+                }}
+              >
+                <h4 className="font-semibold text-sm sm:text-base md:text-lg mb-2" style={{ color: theme.colors.text }}>
                   {holiday.name}
                 </h4>
-                <div className="flex flex-wrap gap-2 mb-2">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2">
                   {holiday.dates.map((date, dateIndex) => (
                     <span
                       key={dateIndex}
-                      className="inline-block bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium"
+                      className="inline-block text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium"
+                      style={{ backgroundColor: theme.colors.secondary }}
                     >
                       {date}
                     </span>
                   ))}
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm" style={{ color: theme.colors.text, opacity: 0.7 }}>
                   စုစုပေါင်း {holiday.total_days} ရက်
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 italic">ဤလတွင် ပွဲတော်များမရှိပါ။</p>
+          <p className="text-sm sm:text-base italic" style={{ color: theme.colors.text, opacity: 0.6 }}>
+            ဤလတွင် ပွဲတော်များမရှိပါ။
+          </p>
         )}
       </div>
 
       {/* Cultural Information */}
-      <div className="bg-gradient-to-b from-yellow-50 to-orange-50 rounded-xl shadow-lg p-6 border border-yellow-200">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">ယနေ့နေ့စဉ်သတင်းအချက်အလက်</h3>
+      <div 
+        className="rounded-xl shadow-lg p-4 sm:p-6 transition-colors duration-500"
+        style={{ 
+          backgroundColor: theme.colors.background,
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: theme.colors.secondary
+        }}
+      >
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4" style={{ color: theme.colors.text }}>
+          ယနေ့နေ့စဉ်သတင်းအချက်အလက်
+        </h3>
         
-        <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
-            <span className="text-gray-700">ဥပုသ်နေ့</span>
-            <span className="text-blue-600 font-medium">လပြည့်/လကွယ်နေ့</span>
+        <div className="space-y-2 sm:space-y-3">
+          <div 
+            className="flex items-center justify-between p-2 sm:p-3 rounded-lg shadow-sm"
+            style={{ backgroundColor: theme.colors.background }}
+          >
+            <span style={{ color: theme.colors.text }}>ဥပုသ်နေ့</span>
+            <span className="font-medium" style={{ color: theme.colors.primary }}>လပြည့်/လကွယ်နေ့</span>
           </div>
           
-          <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
-            <span className="text-gray-700">ရက်ရာဇာ</span>
-            <span className="text-green-600 font-medium">ကောင်းသောနေ့</span>
+          <div 
+            className="flex items-center justify-between p-2 sm:p-3 rounded-lg shadow-sm"
+            style={{ backgroundColor: theme.colors.background }}
+          >
+            <span style={{ color: theme.colors.text }}>ရက်ရာဇာ</span>
+            <span className="font-medium" style={{ color: theme.colors.secondary }}>ကောင်းသောနေ့</span>
           </div>
           
-          <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
-            <span className="text-gray-700">မသွားသင့်သောအရပ်</span>
-            <span className="text-red-600 font-medium">အနောက်မြောက်</span>
+          <div 
+            className="flex items-center justify-between p-2 sm:p-3 rounded-lg shadow-sm"
+            style={{ backgroundColor: theme.colors.background }}
+          >
+            <span style={{ color: theme.colors.text }}>မသွားသင့်သောအရပ်</span>
+            <span className="font-medium" style={{ color: theme.colors.primary }}>အနောက်မြောက်</span>
           </div>
         </div>
         
-        <div className="mt-4 p-3 bg-orange-100 rounded-lg">
-          <p className="text-orange-800 text-sm">
+        <div className="mt-3 sm:mt-4 p-2 sm:p-3 rounded-lg" style={{ backgroundColor: theme.colors.secondary, opacity: 0.2 }}>
+          <p className="text-xs sm:text-sm" style={{ color: theme.colors.text }}>
             <strong>ယနေ့အတွက်အကြံပြုချက်:</strong> ကောင်းကျိုးများပြုလုပ်ရန်အကောင်းဆုံးနေ့ဖြစ်သည်။ 
             မေတ္တာစိတ်ဖြင့် သူတပါးအားကူညီပါ။
           </p>

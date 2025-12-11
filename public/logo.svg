@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect x="32" y="48" width="448" height="416" rx="48" ry="48" fill="#e7e5e4"/>
+  <path d="M32 160h448V96c0-26.5-21.5-48-48-48H80c-26.5 0-48 21.5-48 48v64z" fill="#dc2626"/>
+  <rect x="80" y="24" width="32" height="64" rx="8" ry="8" fill="#991b1b"/>
+  <rect x="400" y="24" width="32" height="64" rx="8" ry="8" fill="#991b1b"/>
+  <text x="50%" y="360" font-family="Arial, sans-serif" font-size="200" text-anchor="middle" fill="#dc2626" font-weight="bold">BF</text>
+  <text x="50%" y="130" font-family="Arial, sans-serif" font-size="40" text-anchor="middle" fill="#ffffff" font-weight="bold">MYANMAR CALENDAR</text>
+</svg>
