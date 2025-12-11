@@ -1,5 +1,6 @@
 import { CalendarData } from '../types/calendar';
 
+// 2026 Holidays Data
 export const myanmarHolidays2026: CalendarData = {
   year: 2026,
   holidays: [
@@ -82,4 +83,221 @@ export const myanmarHolidays2026: CalendarData = {
       total_days: 3
     }
   ]
+};
+
+
+
+// 2025 Holidays Data
+export const myanmarHolidays2025: CalendarData = {
+  year: 2025,
+  holidays: [
+    {
+      month: "January",
+      name: "လွတ်လပ်ရေးနေ့",
+      dates: ["4"],
+      total_days: 1
+    },
+    {
+      month: "February",
+      name: "ပြည်ထောင်စုနေ့",
+      dates: ["12"],
+      total_days: 1
+    },
+    {
+      month: "March",
+      name: "တောင်သူလယ်သမားနေ့",
+      dates: ["2"],
+      total_days: 1
+    },
+    {
+      month: "March",
+      name: "တပေါင်းလပြည့်နေ့",
+      dates: ["13"],
+      total_days: 1
+    },
+    {
+      month: "March",
+      name: "တပ်မတော်နေ့",
+      dates: ["27"],
+      total_days: 1
+    },
+    {
+      month: "April",
+      name: "မဟာသင်္ကြန် ရုံးပိတ်ရက်များ",
+      dates: ["13", "14", "15", "16", "17"],
+      total_days: 5
+    },
+    {
+      month: "May",
+      name: "အလုပ်သမားနေ့",
+      dates: ["1"],
+      total_days: 1
+    },
+    {
+      month: "May",
+      name: "ကဆုန်လပြည့်နေ့",
+      dates: ["11"],
+      total_days: 1
+    },
+    {
+      month: "July",
+      name: "ဝါဆိုလပြည့်နေ့",
+      dates: ["10"],
+      total_days: 1
+    },
+    {
+      month: "July",
+      name: "အာဇာနည်နေ့",
+      dates: ["19"],
+      total_days: 1
+    },
+    {
+      month: "October",
+      name: "သီတင်းကျွတ် ရုံးပိတ်ရက်များ",
+      dates: ["6", "7", "8"],
+      total_days: 3
+    },
+    {
+      month: "November",
+      name: "တန်ဆောင်မုန်းလပြည့်နေ့",
+      dates: ["5"],
+      total_days: 1
+    },
+    {
+      month: "November",
+      name: "အမျိုးသားနေ့",
+      dates: ["14"],
+      total_days: 1
+    },
+    {
+      month: "December",
+      name: "ကရင်နှစ်သစ်ကူးနေ့",
+      dates: ["20"],
+      total_days: 1
+    },
+    {
+      month: "December",
+      name: "ခရစ္စမတ်နေ့",
+      dates: ["25"],
+      total_days: 1
+    }
+  ]
+};
+
+// 2024 Holidays Data
+export const myanmarHolidays2024: CalendarData = {
+  year: 2024,
+  holidays: [
+    {
+      month: "January",
+      name: "လွတ်လပ်ရေးနေ့",
+      dates: ["4"],
+      total_days: 1
+    },
+    {
+      month: "February",
+      name: "ပြည်ထောင်စုနေ့",
+      dates: ["12"],
+      total_days: 1
+    },
+    {
+      month: "March",
+      name: "တောင်သူလယ်သမားနေ့",
+      dates: ["2"],
+      total_days: 1
+    },
+    {
+      month: "March",
+      name: "တပေါင်းလပြည့်နေ့",
+      dates: ["24"],
+      total_days: 1
+    },
+    {
+      month: "March",
+      name: "တပ်မတော်နေ့",
+      dates: ["27"],
+      total_days: 1
+    },
+    {
+      month: "April",
+      name: "မဟာသင်္ကြန် ရုံးပိတ်ရက်များ",
+      dates: ["13", "14", "15", "16", "17"],
+      total_days: 5
+    },
+    {
+      month: "May",
+      name: "အလုပ်သမားနေ့",
+      dates: ["1"],
+      total_days: 1
+    },
+    {
+      month: "May",
+      name: "ကဆုန်လပြည့်နေ့",
+      dates: ["22"],
+      total_days: 1
+    },
+    {
+      month: "July",
+      name: "အာဇာနည်နေ့",
+      dates: ["19"],
+      total_days: 1
+    },
+    {
+      month: "July",
+      name: "ဝါဆိုလပြည့်နေ့",
+      dates: ["20"],
+      total_days: 1
+    },
+    {
+      month: "October",
+      name: "သီတင်းကျွတ် ရုံးပိတ်ရက်များ",
+      dates: ["16", "17", "18"],
+      total_days: 3
+    },
+    {
+      month: "November",
+      name: "တန်ဆောင်မုန်းလပြည့်နေ့",
+      dates: ["15"],
+      total_days: 1
+    },
+    {
+      month: "November",
+      name: "အမျိုးသားနေ့",
+      dates: ["25"],
+      total_days: 1
+    },
+    {
+      month: "December",
+      name: "ခရစ္စမတ်နေ့",
+      dates: ["25"],
+      total_days: 1
+    },
+    {
+      month: "December",
+      name: "ကရင်နှစ်သစ်ကူးနေ့",
+      dates: ["30"],
+      total_days: 1
+    }
+  ]
+};
+
+// Export all holiday data in a map for easy access
+// To add a new year, simply add a new export above (e.g., export const myanmarHolidays2027: CalendarData = {...})
+// and add it to the holidaysMap below - it will automatically be available in the calendar
+export const holidaysMap: Record<number, CalendarData> = {
+  2024: myanmarHolidays2024,
+  2025: myanmarHolidays2025,
+  2026: myanmarHolidays2026,
+};
+
+// Get all available years dynamically
+export const getAvailableYears = (): number[] => {
+  return Object.keys(holidaysMap)
+    .map(year => parseInt(year, 10))
+    .sort((a, b) => a - b);
+};
+
+// Get holiday data for a specific year
+export const getHolidaysForYear = (year: number): CalendarData | undefined => {
+  return holidaysMap[year];
 };
