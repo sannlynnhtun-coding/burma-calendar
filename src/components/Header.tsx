@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar as CalendarIcon, Moon, Sun, ChevronDown } from 'lucide-react';
+import { Moon, Sun, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -52,8 +52,8 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 py-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 sm:gap-4">
-            <div className="p-2.5 rounded-2xl bg-primary/10 text-primary transition-transform hover:scale-105">
-              <CalendarIcon className="h-6 w-6 sm:h-8 sm:w-8" />
+            <div className="flex-shrink-0 transition-transform hover:rotate-3">
+              <img src="/logo.svg" alt="Myanmar Calendar Logo" className="h-10 w-10 sm:h-12 sm:w-12 pointer-events-none" />
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">ပြက္ခဒိန်</h1>
