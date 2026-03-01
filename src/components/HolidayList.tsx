@@ -1,7 +1,10 @@
 import React from 'react';
 import { Holiday } from '../types/calendar';
-import { Calendar, Star } from 'lucide-react';
-import { getCurrentTheme } from '../utils/theme';
+import { Calendar, Star, Info, BellRing } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface HolidayListProps {
   currentDate: Date;
@@ -15,12 +18,12 @@ export const HolidayList: React.FC<HolidayListProps> = ({ currentDate, holidays 
   const getNextFestival = () => {
     const now = new Date();
     const currentYear = now.getFullYear();
-    
+
     for (let monthOffset = 0; monthOffset <= 12; monthOffset++) {
       const checkDate = new Date(currentYear, now.getMonth() + monthOffset, 1);
       const checkMonth = checkDate.toLocaleDateString('en-US', { month: 'long' });
       const monthHols = holidays.filter(h => h.month === checkMonth);
-      
+
       for (const holiday of monthHols) {
         for (const date of holiday.dates) {
           const holidayDate = new Date(currentYear, checkDate.getMonth(), parseInt(date));
@@ -35,135 +38,123 @@ export const HolidayList: React.FC<HolidayListProps> = ({ currentDate, holidays 
   };
 
   const nextFestival = getNextFestival();
-  const theme = getCurrentTheme(currentDate);
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, x: -20 },
+    show: { opacity: 1, x: 0 }
+  };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6">
       {/* Next Festival Countdown */}
       {nextFestival && (
-        <div 
-          className="text-white p-4 sm:p-6 rounded-xl shadow-lg transition-colors duration-500"
-          style={{ backgroundColor: theme.colors.primary }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3">
-            <Star className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: theme.colors.secondary }} />
-            <h3 className="text-base sm:text-lg md:text-xl font-semibold">နောက်လာမည့်ပွဲတော်</h3>
-          </div>
-          <div className="text-lg sm:text-xl md:text-2xl font-bold mb-2">{nextFestival.name}</div>
-          <div className="text-sm sm:text-base md:text-lg">
-            {nextFestival.daysUntil} ရက်ကျန်ပါသည်
-            <span className="block text-xs sm:text-sm mt-1" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-              {nextFestival.date.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}
-            </span>
-          </div>
-        </div>
+          <Card className="relative overflow-hidden p-6 border-2 border-primary/20 bg-primary/5 shadow-none group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Star className="h-20 w-20 rotate-12" />
+            </div>
+
+            <div className="relative z-10 space-y-4">
+              <div className="flex items-center gap-2">
+                <BellRing className="h-5 w-5 text-primary animate-bounce" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-primary/80">နောက်လာမည့်ပွဲတော်</h3>
+              </div>
+
+              <div className="space-y-1">
+                <h2 className="text-2xl font-black">{nextFestival.name}</h2>
+                <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+                  <Star className="h-4 w-4 fill-primary text-primary" />
+                  {nextFestival.daysUntil} ရက်ကျန်ပါသည်
+                </div>
+              </div>
+
+              <div className="pt-2 text-xs font-bold text-muted-foreground/60 border-t border-primary/10">
+                {nextFestival.date.toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </div>
+            </div>
+          </Card>
+        </motion.div>
       )}
 
       {/* Current Month Holidays */}
-      <div 
-        className="rounded-xl shadow-lg p-4 sm:p-6 transition-colors duration-500"
-        style={{ backgroundColor: theme.colors.background }}
-      >
-        <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
-          <Calendar className="h-5 w-5 sm:h-6 sm:w-6" style={{ color: theme.colors.primary }} />
-          <h3 className="text-base sm:text-lg md:text-xl font-semibold" style={{ color: theme.colors.text }}>
-            {currentMonth} လပွဲတော်များ
-          </h3>
+      <Card className="p-6 border-2 rounded-2xl bg-card">
+        <div className="flex items-center gap-3 mb-6">
+          <Calendar className="h-6 w-6 text-primary" />
+          <h3 className="text-xl font-bold">{currentMonth} ပွဲတော်များ</h3>
         </div>
-        
+
         {monthHolidays.length > 0 ? (
-          <div className="space-y-3 sm:space-y-4">
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className="space-y-4"
+          >
             {monthHolidays.map((holiday, index) => (
-              <div 
-                key={index} 
-                className="pl-3 sm:pl-4 py-2 sm:py-3 rounded-r-lg transition-colors duration-500"
-                style={{ 
-                  borderLeftWidth: '4px',
-                  borderLeftStyle: 'solid',
-                  borderLeftColor: theme.colors.primary,
-                  backgroundColor: theme.colors.background,
-                  opacity: 0.95
-                }}
+              <motion.div
+                key={index}
+                variants={item}
+                className="group relative pl-5 py-3 rounded-xl hover:bg-secondary/30 transition-colors"
               >
-                <h4 className="font-semibold text-sm sm:text-base md:text-lg mb-2" style={{ color: theme.colors.text }}>
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary rounded-full" />
+                <h4 className="font-bold text-base mb-2 group-hover:text-primary transition-colors">
                   {holiday.name}
                 </h4>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2">
+                <div className="flex flex-wrap gap-2">
                   {holiday.dates.map((date, dateIndex) => (
-                    <span
-                      key={dateIndex}
-                      className="inline-block text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium"
-                      style={{ backgroundColor: theme.colors.secondary }}
-                    >
+                    <Badge key={dateIndex} variant="secondary" className="font-bold border-2">
                       {date}
-                    </span>
+                    </Badge>
                   ))}
                 </div>
-                <p className="text-xs sm:text-sm" style={{ color: theme.colors.text, opacity: 0.7 }}>
-                  စုစုပေါင်း {holiday.total_days} ရက်
-                </p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
-          <p className="text-sm sm:text-base italic" style={{ color: theme.colors.text, opacity: 0.6 }}>
-            ဤလတွင် ပွဲတော်များမရှိပါ။
-          </p>
+          <div className="text-center py-8 space-y-2 opacity-50">
+            <Info className="h-10 w-10 mx-auto" />
+            <p className="text-sm font-bold italic">ဤလတွင် ပွဲတော်များမရှိပါ။</p>
+          </div>
         )}
-      </div>
+      </Card>
 
-      {/* Cultural Information */}
-      <div 
-        className="rounded-xl shadow-lg p-4 sm:p-6 transition-colors duration-500"
-        style={{ 
-          backgroundColor: theme.colors.background,
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: theme.colors.secondary
-        }}
-      >
-        <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4" style={{ color: theme.colors.text }}>
-          ယနေ့နေ့စဉ်သတင်းအချက်အလက်
+      {/* Cultural Info Card */}
+      <Card className="p-6 border-2 border-dashed rounded-2xl bg-secondary/10">
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
+          ယနေ့သတင်းအချက်အလက်
         </h3>
-        
-        <div className="space-y-2 sm:space-y-3">
-          <div 
-            className="flex items-center justify-between p-2 sm:p-3 rounded-lg shadow-sm"
-            style={{ backgroundColor: theme.colors.background }}
-          >
-            <span style={{ color: theme.colors.text }}>ဥပုသ်နေ့</span>
-            <span className="font-medium" style={{ color: theme.colors.primary }}>လပြည့်/လကွယ်နေ့</span>
-          </div>
-          
-          <div 
-            className="flex items-center justify-between p-2 sm:p-3 rounded-lg shadow-sm"
-            style={{ backgroundColor: theme.colors.background }}
-          >
-            <span style={{ color: theme.colors.text }}>ရက်ရာဇာ</span>
-            <span className="font-medium" style={{ color: theme.colors.secondary }}>ကောင်းသောနေ့</span>
-          </div>
-          
-          <div 
-            className="flex items-center justify-between p-2 sm:p-3 rounded-lg shadow-sm"
-            style={{ backgroundColor: theme.colors.background }}
-          >
-            <span style={{ color: theme.colors.text }}>မသွားသင့်သောအရပ်</span>
-            <span className="font-medium" style={{ color: theme.colors.primary }}>အနောက်မြောက်</span>
-          </div>
+
+        <div className="space-y-3">
+          {[
+            { label: 'ဥပုသ်နေ့', value: 'လပြည့်/လကွယ်နေ့', highlight: 'text-primary' },
+            { label: 'ရက်ရာဇာ', value: 'ကောင်းသောနေ့', highlight: 'text-amber-600' },
+            { label: 'မသွားသင့်သောအရပ်', value: 'အနောက်မြောက်', highlight: 'text-destructive' }
+          ].map((info, i) => (
+            <div key={i} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+              <span className="text-sm font-bold text-muted-foreground">{info.label}</span>
+              <span className={cn("text-sm font-black", info.highlight)}>{info.value}</span>
+            </div>
+          ))}
         </div>
-        
-        <div className="mt-3 sm:mt-4 p-2 sm:p-3 rounded-lg" style={{ backgroundColor: theme.colors.secondary, opacity: 0.2 }}>
-          <p className="text-xs sm:text-sm" style={{ color: theme.colors.text }}>
-            <strong>ယနေ့အတွက်အကြံပြုချက်:</strong> ကောင်းကျိုးများပြုလုပ်ရန်အကောင်းဆုံးနေ့ဖြစ်သည်။ 
-            မေတ္တာစိတ်ဖြင့် သူတပါးအားကူညီပါ။
-          </p>
-        </div>
-      </div>
+      </Card>
     </div>
   );
 };
