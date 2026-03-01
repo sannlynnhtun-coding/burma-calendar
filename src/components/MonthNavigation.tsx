@@ -1,6 +1,13 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getCurrentTheme } from '../utils/theme';
+import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface MonthNavigationProps {
   currentDate: Date;
@@ -9,8 +16,8 @@ interface MonthNavigationProps {
   maxYear: number;
 }
 
-export const MonthNavigation: React.FC<MonthNavigationProps> = ({ 
-  currentDate, 
+export const MonthNavigation: React.FC<MonthNavigationProps> = ({
+  currentDate,
   onDateChange,
   minYear,
   maxYear
@@ -22,7 +29,7 @@ export const MonthNavigation: React.FC<MonthNavigationProps> = ({
     } else {
       newDate.setMonth(newDate.getMonth() + 1);
     }
-    
+
     // Restrict to supported years
     const year = newDate.getFullYear();
     if (year < minYear) {
@@ -34,15 +41,20 @@ export const MonthNavigation: React.FC<MonthNavigationProps> = ({
       newDate.setMonth(11);
       newDate.setDate(31);
     }
-    
+
+    onDateChange(newDate);
+  };
+
+  const handleMonthSelect = (value: string) => {
+    const newDate = new Date(currentDate);
+    newDate.setMonth(parseInt(value, 10));
     onDateChange(newDate);
   };
 
   const goToToday = () => {
     const today = new Date();
     const year = today.getFullYear();
-    
-    // If today is not in supported years, go to the first supported year
+
     if (year < minYear || year > maxYear) {
       onDateChange(new Date(minYear, 0, 1));
     } else {
@@ -50,7 +62,6 @@ export const MonthNavigation: React.FC<MonthNavigationProps> = ({
     }
   };
 
-  // Check if navigation buttons should be disabled
   const canGoPrev = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -63,79 +74,62 @@ export const MonthNavigation: React.FC<MonthNavigationProps> = ({
     return !(year === maxYear && month === 11);
   };
 
-  const formatCurrentMonth = () => {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    const myanmarMonths = [
-      'တန်ခူး', 'ကဆုန်', 'နယုန်', 'ဝါဆို', 'ဝါခေါင်', 'တော်သလင်း',
-      'သီတင်းကျွတ်', 'တန်ဆောင်မုန်း', 'နတ်တော်', 'ပြာသို', 'တပေါင်း', 'တပေါင်းလမ်း'
-    ];
-    
-    const monthIndex = currentDate.getMonth();
-    return {
-      english: `${months[monthIndex]} ${currentDate.getFullYear()}`,
-      myanmar: `${myanmarMonths[monthIndex]} ${currentDate.getFullYear()}`
-    };
-  };
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const myanmarMonths = [
+    'တန်ခူး', 'ကဆုန်', 'နယုန်', 'ဝါဆို', 'ဝါခေါင်', 'တော်သလင်း',
+    'သီတင်းကျွတ်', 'တန်ဆောင်မုန်း', 'နတ်တော်', 'ပြာသို', 'တပေါင်း', 'တပေါင်းလမ်း'
+  ];
 
-  const monthNames = formatCurrentMonth();
-  const theme = getCurrentTheme(currentDate);
+  const currentMonthIdx = currentDate.getMonth();
 
   return (
-    <div 
-      className="rounded-xl shadow-lg p-3 sm:p-4 mb-4 sm:mb-6 transition-colors duration-500"
-      style={{ backgroundColor: theme.colors.background }}
-    >
-      <div className="flex items-center justify-between gap-2 sm:gap-4">
-        <button
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-card border-2 p-4 sm:p-5 rounded-2xl shadow-sm transition-all duration-500">
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        <Button
+          variant="outline"
+          size="icon"
           onClick={() => navigateMonth('prev')}
           disabled={!canGoPrev()}
-          className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-all duration-200 text-xs sm:text-sm md:text-base ${
-            canGoPrev() 
-              ? 'text-white hover:opacity-90' 
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
-          style={canGoPrev() ? { backgroundColor: theme.colors.primary } : {}}
+          className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl transition-all active:scale-90 border-2"
         >
-          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
-          <span className="hidden sm:inline">ရှေ့လ</span>
-        </button>
-        
-        <div className="text-center flex-1 px-2">
-          <div className="text-base sm:text-lg md:text-xl font-bold" style={{ color: theme.colors.text }}>
-            {monthNames.myanmar}
-          </div>
-          <div className="text-xs sm:text-sm" style={{ color: theme.colors.text, opacity: 0.7 }}>
-            {monthNames.english}
-          </div>
-        </div>
-        
-        <button
+          <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+        </Button>
+
+        <Select value={currentMonthIdx.toString()} onValueChange={handleMonthSelect}>
+          <SelectTrigger className="h-10 sm:h-12 flex-1 sm:w-[220px] rounded-xl font-bold text-base sm:text-lg border-2">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl border-2">
+            {months.map((month, idx) => (
+              <SelectItem key={month} value={idx.toString()} className="font-bold py-2.5">
+                {month} ({myanmarMonths[idx]})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Button
+          variant="outline"
+          size="icon"
           onClick={() => navigateMonth('next')}
           disabled={!canGoNext()}
-          className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-all duration-200 text-xs sm:text-sm md:text-base ${
-            canGoNext() 
-              ? 'text-white hover:opacity-90' 
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
-          style={canGoNext() ? { backgroundColor: theme.colors.primary } : {}}
+          className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl transition-all active:scale-90 border-2"
         >
-          <span className="hidden sm:inline">နောက်လ</span>
-          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
-        </button>
+          <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+        </Button>
       </div>
-      
-      <div className="flex justify-center mt-3 sm:mt-4">
-        <button
-          onClick={goToToday}
-          className="px-4 sm:px-6 py-1.5 sm:py-2 text-white rounded-lg hover:opacity-90 transition-all duration-200 font-medium text-xs sm:text-sm md:text-base"
-          style={{ backgroundColor: theme.colors.secondary }}
-        >
-          ဒီနေ့သို့ပြန်သွား
-        </button>
-      </div>
+
+      <Button
+        onClick={goToToday}
+        variant="secondary"
+        className="w-full sm:w-auto h-10 sm:h-12 px-6 rounded-xl font-bold text-base bg-secondary transition-all hover:scale-105 active:scale-95 border-2 shadow-sm"
+      >
+        <CalendarDays className="h-5 w-5 mr-2 opacity-70" />
+        ဒီနေ့သို့
+      </Button>
     </div>
   );
 };

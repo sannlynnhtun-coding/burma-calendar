@@ -6,17 +6,18 @@ export interface ThemeColors {
   secondary: string;
   background: string;
   text: string;
+  card: string;
+  border: string;
+  accent: string;
 }
 
 export interface Theme {
   name: string;
   season: 'cool' | 'hot' | 'rainy';
-  colors: ThemeColors;
+  light: ThemeColors;
+  dark: ThemeColors;
 }
 
-/**
- * Myanmar seasons enum
- */
 export enum MyanmarSeason {
   COOL = 'cool',
   HOT = 'hot',
