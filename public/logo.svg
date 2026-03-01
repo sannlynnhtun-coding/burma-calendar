@@ -1,8 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect x="32" y="48" width="448" height="416" rx="48" ry="48" fill="#e7e5e4"/>
-  <path d="M32 160h448V96c0-26.5-21.5-48-48-48H80c-26.5 0-48 21.5-48 48v64z" fill="#dc2626"/>
-  <rect x="80" y="24" width="32" height="64" rx="8" ry="8" fill="#991b1b"/>
-  <rect x="400" y="24" width="32" height="64" rx="8" ry="8" fill="#991b1b"/>
-  <text x="50%" y="360" font-family="Arial, sans-serif" font-size="200" text-anchor="middle" fill="#dc2626" font-weight="bold">BF</text>
-  <text x="50%" y="130" font-family="Arial, sans-serif" font-size="40" text-anchor="middle" fill="#ffffff" font-weight="bold">MYANMAR CALENDAR</text>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="128" fill="url(#paint0_linear_logo)"/>
+  <path d="M256 80L180 180H332L256 80Z" fill="white"/>
+  <path d="M160 180H352V220H160V180Z" fill="white" fill-opacity="0.8"/>
+  <path d="M140 230H372V280H140V230Z" fill="white" fill-opacity="0.9"/>
+  <path d="M120 290H392V350H120V290Z" fill="white"/>
+  <rect x="160" y="360" width="192" height="72" rx="8" fill="white" fill-opacity="0.7"/>
+  <circle cx="256" cy="396" r="16" fill="white"/>
+  <defs>
+    <linearGradient id="paint0_linear_logo" x1="0" y2="512" x2="512" y1="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#1E40AF"/>
+    </linearGradient>
+  </defs>
 </svg>
