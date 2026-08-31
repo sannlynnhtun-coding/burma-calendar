@@ -23,3 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 .env
+.vs/
+.vs/ProjectSettings.json
+.vs/slnx.sqlite
+.vs/burma-calendar.slnx/FileContentIndex/2c78b9bc-3cdc-45d8-8fe9-a8785f667c86.vsidx
+.vs/burma-calendar.slnx/FileContentIndex/5c09fcb4-df0c-4f95-82a9-e88838ff08be.vsidx
+.vs/burma-calendar.slnx/FileContentIndex/a1fa5c97-2b3e-43e8-b76c-85e69b64eea4.vsidx
+.vs/burma-calendar.slnx/FileContentIndex/e8e7d4d6-cc3b-4aa0-9076-e1a1cc713806.vsidx
+.vs/burma-calendar.slnx/FileContentIndex/2320c951-a8aa-4516-a9c2-d5d4e1b8ef6f.vsidx
