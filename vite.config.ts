@@ -9,14 +9,19 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo.svg'],
+      includeAssets: ['logo.svg', 'social-preview.png'],
       manifest: {
-        name: 'Myanmar Calendar 2026',
+        id: '/',
+        name: 'Myanmar Calendar 2024–2027',
         short_name: 'Myanmar Calendar',
-        description: 'A beautiful and modern Myanmar Calendar application combining tradition with technology.',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        description: 'Myanmar calendar and public holiday reference in Burmese and English.',
+        lang: 'my',
+        start_url: '/',
+        scope: '/',
+        theme_color: '#36558f',
+        background_color: '#e7ebf0',
         display: 'standalone',
+        categories: ['utilities', 'lifestyle'],
         icons: [
           {
             src: 'logo.svg',
@@ -29,6 +34,15 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/svg+xml',
             purpose: 'any maskable'
+          }
+        ],
+        screenshots: [
+          {
+            src: 'social-preview.png',
+            sizes: '1200x630',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Myanmar Calendar with Burmese dates and a three-month holiday outlook'
           }
         ]
       }
