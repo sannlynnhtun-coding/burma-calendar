@@ -32,8 +32,11 @@ function App() {
         />
 
         <Header currentDate={currentDate} />
-        <CalendarGrid currentDate={currentDate} holidays={currentHolidays} />
-        <HolidayList currentDate={currentDate} holidays={currentHolidays} />
+
+        <div className="calendar-workspace">
+          <CalendarGrid currentDate={currentDate} holidays={currentHolidays} />
+          <HolidayList currentDate={currentDate} />
+        </div>
 
         <footer className="sheet-footer">
           <div className="legend" aria-label="Calendar legend">

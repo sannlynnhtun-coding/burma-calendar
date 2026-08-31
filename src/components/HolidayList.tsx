@@ -1,52 +1,94 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { getHolidaysForYear } from '../data/holidays';
 import { Holiday } from '../types/calendar';
-import { ENGLISH_MONTHS, toMyanmarNumerals } from '../utils/calendar';
+import { ENGLISH_MONTHS, MYANMAR_MONTH_PAIRS, toMyanmarNumerals } from '../utils/calendar';
 
 interface HolidayListProps {
   currentDate: Date;
-  holidays: Holiday[];
 }
 
-export const HolidayList: React.FC<HolidayListProps> = ({ currentDate, holidays }) => {
-  const currentMonth = ENGLISH_MONTHS[currentDate.getMonth()];
-  const monthHolidays = holidays.filter((holiday) => holiday.month === currentMonth);
-  const holidayDayCount = new Set(monthHolidays.flatMap((holiday) => holiday.dates)).size;
+interface MonthHolidayGroup {
+  date: Date;
+  holidays: Holiday[];
+  hasYearData: boolean;
+}
+
+export const HolidayList: React.FC<HolidayListProps> = ({ currentDate }) => {
+  const monthGroups = useMemo<MonthHolidayGroup[]>(() => (
+    Array.from({ length: 3 }, (_, offset) => {
+      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1);
+      const yearData = getHolidaysForYear(date.getFullYear());
+      const monthName = ENGLISH_MONTHS[date.getMonth()];
+
+      return {
+        date,
+        holidays: yearData?.holidays.filter((holiday) => holiday.month === monthName) ?? [],
+        hasYearData: Boolean(yearData),
+      };
+    })
+  ), [currentDate]);
+
+  const visibleHolidayDays = new Set(
+    monthGroups.flatMap((group) => (
+      group.holidays.flatMap((holiday) => (
+        holiday.dates.map((day) => `${group.date.getFullYear()}-${group.date.getMonth()}-${day}`)
+      ))
+    )),
+  ).size;
 
   return (
-    <section className="holiday-docket" aria-labelledby="holiday-heading">
-      <div className="docket-heading">
+    <aside className="holiday-sidebar" aria-labelledby="holiday-heading">
+      <header className="holiday-sidebar-heading">
         <div>
-          <span className="docket-kicker">OFFICIAL DATES · ရုံးပိတ်ရက်များ</span>
-          <h2 id="holiday-heading">{currentMonth} အားလပ်ရက်စာရင်း</h2>
+          <span className="sidebar-kicker">CURRENT + NEXT 2 MONTHS</span>
+          <h2 id="holiday-heading">၃ လတာ အားလပ်ရက်</h2>
         </div>
-        <div className="docket-count" aria-label={`${holidayDayCount} holiday days`}>
-          <strong>{toMyanmarNumerals(holidayDayCount)}</strong>
+        <div className="sidebar-total" aria-label={`${visibleHolidayDays} holiday days`}>
+          <strong>{toMyanmarNumerals(visibleHolidayDays)}</strong>
           <span>ရက်</span>
         </div>
-      </div>
+      </header>
 
-      {monthHolidays.length > 0 ? (
-        <div className="holiday-list">
-          {monthHolidays.map((holiday, index) => (
-            <article className="holiday-entry" key={`${holiday.name}-${holiday.dates.join('-')}-${index}`}>
-              <div className="holiday-dates" aria-label={`Dates ${holiday.dates.join(', ')}`}>
-                {holiday.dates.map((date) => <strong key={date}>{date}</strong>)}
-              </div>
-              <div className="holiday-copy">
-                <h3>{holiday.name}</h3>
-                {holiday.nameEn && <p>{holiday.nameEn}</p>}
-              </div>
-              {holiday.type && (
-                <span className={`holiday-type ${holiday.type.includes('Bridge') ? 'holiday-type--bridge' : ''}`}>
-                  {holiday.type}
-                </span>
+      <div className="holiday-months">
+        {monthGroups.map((group, groupIndex) => {
+          const monthIndex = group.date.getMonth();
+          const monthName = ENGLISH_MONTHS[monthIndex];
+
+          return (
+            <section className="holiday-month" key={`${group.date.getFullYear()}-${monthIndex}`}>
+              <header className="holiday-month-heading">
+                <span className="holiday-month-number">{String(monthIndex + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{monthName} <small>{group.date.getFullYear()}</small></h3>
+                  <p>{MYANMAR_MONTH_PAIRS[monthIndex]}</p>
+                </div>
+                {groupIndex === 0 && <span className="current-month-label">ယခုလ</span>}
+              </header>
+
+              {group.holidays.length > 0 ? (
+                <ul className="sidebar-holiday-list">
+                  {group.holidays.map((holiday, index) => (
+                    <li key={`${holiday.name}-${holiday.dates.join('-')}-${index}`}>
+                      <span className="sidebar-holiday-date">{holiday.dates.join('·')}</span>
+                      <span className="sidebar-holiday-name" title={holiday.nameEn ?? holiday.name}>
+                        {holiday.name}
+                      </span>
+                      <i
+                        className={`sidebar-holiday-mark ${holiday.type?.includes('Bridge') ? 'sidebar-holiday-mark--bridge' : ''}`}
+                        aria-hidden="true"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="sidebar-holiday-empty">
+                  {group.hasYearData ? 'ရုံးပိတ်ရက် မရှိပါ' : 'အချက်အလက် မရရှိသေးပါ'}
+                </p>
               )}
-            </article>
-          ))}
-        </div>
-      ) : (
-        <p className="holiday-empty">ဤလတွင် သတ်မှတ်ထားသော ရုံးပိတ်ရက် မရှိပါ။</p>
-      )}
-    </section>
+            </section>
+          );
+        })}
+      </div>
+    </aside>
   );
 };
