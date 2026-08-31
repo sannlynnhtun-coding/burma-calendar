@@ -1,9 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DayInfo, Holiday } from '../types/calendar';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { useTheme } from './ThemeProvider';
+import { ENGLISH_MONTHS, toMyanmarNumerals, WEEKDAYS } from '../utils/calendar';
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -11,114 +8,90 @@ interface CalendarGridProps {
 }
 
 export const CalendarGrid: React.FC<CalendarGridProps> = ({ currentDate, holidays }) => {
-  const { theme: mode } = useTheme();
-
-  const getDaysInMonth = (date: Date): DayInfo[] => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
+  const days = useMemo((): DayInfo[] => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstWeekday = new Date(year, month, 1).getDay();
     const today = new Date();
+    const monthHolidays = holidays.filter((holiday) => holiday.month === ENGLISH_MONTHS[month]);
 
-    const monthName = firstDay.toLocaleDateString('en-US', { month: 'long' });
-    const monthHolidays = holidays.filter(h => h.month === monthName);
+    return Array.from({ length: 42 }, (_, index) => {
+      const date = new Date(year, month, index - firstWeekday + 1);
+      const isCurrentMonth = date.getMonth() === month;
+      const matchingHolidays = isCurrentMonth
+        ? monthHolidays.filter((holiday) => holiday.dates.includes(String(date.getDate())))
+        : [];
 
-    const days: DayInfo[] = [];
-
-    for (let i = 0; i < firstDay.getDay(); i++) {
-      days.push({ day: 0, isHoliday: false, isToday: false, isWeekend: false });
-    }
-
-    for (let day = 1; day <= lastDay.getDate(); day++) {
-      const dayDate = new Date(year, month, day);
-      const isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6;
-      const isToday = dayDate.toDateString() === today.toDateString();
-
-      let isHoliday = false;
-      let holidayName = '';
-
-      for (const holiday of monthHolidays) {
-        if (holiday.dates.includes(day.toString())) {
-          isHoliday = true;
-          holidayName = holiday.name;
-          break;
-        }
-      }
-
-      days.push({ day, isHoliday, holidayName, isToday, isWeekend });
-    }
-
-    return days;
-  };
-
-  const days = getDaysInMonth(currentDate);
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const weekDaysMm = ['တနင်္ဂနွေ', 'တနင်္လာ', 'အင်္ဂါ', 'ဗုဒ္ဓဟူး', 'ကြာသပတေး', 'သောကြာ', 'စနေ'];
+      return {
+        day: date.getDate(),
+        date,
+        isCurrentMonth,
+        isHoliday: matchingHolidays.length > 0,
+        holidayName: matchingHolidays.map((holiday) => holiday.name).join(' / '),
+        isToday:
+          date.getFullYear() === today.getFullYear()
+          && date.getMonth() === today.getMonth()
+          && date.getDate() === today.getDate(),
+        isWeekend: date.getDay() === 0 || date.getDay() === 6,
+      };
+    });
+  }, [currentDate, holidays]);
 
   return (
-    <Card className="p-4 sm:p-6 border-2 rounded-2xl shadow-sm transition-all duration-500 overflow-hidden bg-card">
-      <div className="grid grid-cols-7 gap-2 mb-4">
-        {weekDays.map((day, index) => (
-          <div
-            key={day}
-            className="text-center p-2 rounded-xl bg-secondary/50"
-          >
-            <div className="font-bold text-xs sm:text-sm text-primary">{day}</div>
-            <div className="text-[10px] hidden md:block font-medium opacity-60">{weekDaysMm[index]}</div>
-          </div>
-        ))}
-      </div>
+    <section className="calendar-table-wrap" aria-label={`${ENGLISH_MONTHS[currentDate.getMonth()]} ${currentDate.getFullYear()}`}>
+      <div className="calendar-table" id="calendar-grid">
+        <div className="weekday-row" role="row">
+          {WEEKDAYS.map((weekday, index) => (
+            <div
+              className={`weekday ${index === 0 || index === 6 ? 'weekday--weekend' : ''}`}
+              key={weekday.short}
+              role="columnheader"
+            >
+              <strong>{weekday.short}</strong>
+              <span>{weekday.myanmar}</span>
+            </div>
+          ))}
+        </div>
 
-      <motion.div
-        key={currentDate.toISOString()}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="grid grid-cols-7 gap-2"
-      >
-        <AnimatePresence mode="popLayout">
-          {days.map((dayInfo, index) => {
-            if (dayInfo.day === 0) return <div key={`empty-${index}`} />;
-
-            const isToday = dayInfo.isToday;
-            const isHoliday = dayInfo.isHoliday;
-            const isWeekend = dayInfo.isWeekend && !isHoliday;
+        <div className="day-grid" role="grid">
+          {days.map((dayInfo) => {
+            const classes = [
+              'day-cell',
+              !dayInfo.isCurrentMonth ? 'day-cell--outside' : '',
+              dayInfo.isWeekend ? 'day-cell--weekend' : '',
+              dayInfo.isHoliday ? 'day-cell--holiday' : '',
+              dayInfo.isToday ? 'day-cell--today' : '',
+            ].filter(Boolean).join(' ');
 
             return (
-              <motion.div
-                key={`${currentDate.getMonth()}-${dayInfo.day}`}
-                layout
-                whileHover={{ scale: 1.05, zIndex: 10 }}
-                className={cn(
-                  "relative aspect-square sm:aspect-auto sm:min-h-[80px] p-2 rounded-xl border-2 transition-all cursor-default flex flex-col items-center sm:items-start justify-center sm:justify-start",
-                  isToday && "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20",
-                  isHoliday && !isToday && "bg-secondary/80 border-secondary text-secondary-foreground font-bold",
-                  isWeekend && !isToday && !isHoliday && "bg-background border-muted text-muted-foreground opacity-70",
-                  !isToday && !isHoliday && !isWeekend && "bg-background border-border hover:border-primary/30"
-                )}
+              <div
+                className={classes}
+                key={dayInfo.date.toISOString()}
+                role="gridcell"
+                aria-label={dayInfo.date.toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
               >
-                <span className="text-sm sm:text-xl font-bold">
-                  {dayInfo.day}
-                </span>
+                <div className="day-meta">
+                  <span className="day-myanmar-number">{toMyanmarNumerals(dayInfo.day)}</span>
+                  {dayInfo.isToday && <span className="today-marker">ယနေ့</span>}
+                </div>
 
-                {isHoliday && (
-                  <div className="hidden sm:block mt-1 text-[9px] leading-tight font-bold uppercase tracking-tighter opacity-80">
+                <span className="day-number">{dayInfo.day}</span>
+
+                {dayInfo.isHoliday && (
+                  <span className="holiday-name" title={dayInfo.holidayName}>
                     {dayInfo.holidayName}
-                  </div>
+                  </span>
                 )}
-
-                {isToday && (
-                  <div className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                )}
-
-                {isHoliday && !isToday && (
-                  <div className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-primary" />
-                )}
-              </motion.div>
+              </div>
             );
           })}
-        </AnimatePresence>
-      </motion.div>
-    </Card>
+        </div>
+      </div>
+    </section>
   );
 };

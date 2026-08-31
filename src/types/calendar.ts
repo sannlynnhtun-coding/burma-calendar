@@ -3,6 +3,8 @@ export interface Holiday {
   name: string;
   dates: string[];
   total_days: number;
+  nameEn?: string;
+  type?: string;
 }
 
 export interface CalendarData {
@@ -12,6 +14,8 @@ export interface CalendarData {
 
 export interface DayInfo {
   day: number;
+  date: Date;
+  isCurrentMonth: boolean;
   isHoliday: boolean;
   holidayName?: string;
   isToday: boolean;
