@@ -572,7 +572,7 @@ a:focus-visible {
 
 .sidebar-holiday-list li {
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) 6px;
+  grid-template-columns: max-content minmax(0, 1fr) 6px;
   align-items: center;
   min-height: 22px;
   gap: 7px;
@@ -589,6 +589,8 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .sidebar-holiday-name {
